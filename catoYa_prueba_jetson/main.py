@@ -1,6 +1,6 @@
 import funciones
 import numpy as np
-import serial
+#import serial
 import cv2 as cv
 
 capture = cv.VideoCapture(0) # Leer webcam
@@ -51,8 +51,8 @@ while True:
         ki = 0.8
         kd = 0.3
 
-        #print(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd ))
-        funciones.enviar_dato(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd ))
+        print(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd ))
+        #funciones.enviar_dato(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd ))
 
     else: # si no detecta blanco solo graficar imagen
         cv.imshow('detectar', thresh_inv)

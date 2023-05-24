@@ -1,5 +1,5 @@
 import numpy as np
-import serial
+#import serial
 import time
 
 def pid_control(x, medio,p_anterior, i, kp, ki, kd):
