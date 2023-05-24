@@ -1,6 +1,7 @@
 import funciones
 import numpy as np
 #import serial
+# token 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
 import cv2 as cv
 
 capture = cv.VideoCapture(0) # Leer webcam
