@@ -1,26 +1,17 @@
-import funciones
+import funciones # funciones encapsuladas
 import numpy as np
 import time
-#import serial
-# I2C 
-from smbus import SMBus
-adress = 0x30
-bus = SMBus(1)
-registro = 0x00
-#
-
 import cv2 as cv
+from smbus import SMBus
+# i2c
+adress = 0x30 # direccion de i2c
+registro = 0x00 
 
 capture = cv.VideoCapture(0) # Leer webcam
-# width = 300
-# height = 300
-# capture.set(cv.CAP_PROP_FRAME_WIDTH, width)
-# capture.set(cv.CAP_PROP_FRAME_HEIGHT, height)
-
-constante = 1
-i = 0
-p_anterior = 0
-control = 0
+constante = 1 # valor que determina el peso del error
+i = 0 # valor integral
+p_anterior = 0 # error anterior
+control = 0 #
 
 
 while True:
@@ -59,19 +50,13 @@ while True:
         ki = 0.5
         kd = 0.01
     
-        control_err = int(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd))
-        control_err = funciones.convertir_rango(control_err,-400,400,-254, 254) 
-        if(control_err < 0):
-            registro = 0x00
-            contro_err_abs = control_err * (-1)
-            valor_bytes = [(contro_err_abs >> 8) & 0xFF, contro_err_abs & 0xFF]			
-            bus.write_i2c_block_data(adress, registro, valor_bytes)
-        elif(control_err >= 0):
-            registro = 0x01
-            valor_bytes = [(control_err >> 8) & 0xFF, control_err & 0xFF]			
-            bus.write_i2c_block_data(adress, registro, valor_bytes)
+        control_err = int(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd))  # calcula el error por medio de un control PID
+		
+        rango = 400
+        rango_nuevo = 254	
 
-        #print(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd ))
+        control_err = funciones.convertir_rango(control_err,-rango,rango,-rango_nuevo, rango_nuevo)   # nomraliza los valores a rangos de -254 a 254 
+        funciones.comunicacion_i2c(adress, control_err)
         print(control_err)
 
             #funciones.enviar_dato(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd ))
@@ -83,3 +68,4 @@ while True:
         break
 capture.release()
 cv.destroyAllWindows()
+
