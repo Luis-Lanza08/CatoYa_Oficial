@@ -1,0 +1,7 @@
+from ultralytics import YOLO
+#cargar modelo
+model = YOLO("yolov8n.pt")
+results = model.predict(source="0", show=True,imgsz=320, classes=0)
+result = results[0]
+print(result.names)
+print("hola")

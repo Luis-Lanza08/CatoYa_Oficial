@@ -1,7 +1,14 @@
 import funciones
 import numpy as np
+import time
 #import serial
-# token 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
+# I2C 
+from smbus import SMBus
+adress = 0x30
+bus = SMBus(1)
+registro = 0x00
+#
+
 import cv2 as cv
 
 capture = cv.VideoCapture(0) # Leer webcam
@@ -48,12 +55,26 @@ while True:
         cv.imshow('detectar', final)
 
         # PID
-        kp = 2
-        ki = 0.8
-        kd = 0.3
+        kp = 1
+        ki = 0.5
+        kd = 0.01
+    
+        control_err = int(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd))
+        control_err = funciones.convertir_rango(control_err,-400,400,-254, 254) 
+        if(control_err < 0):
+            registro = 0x00
+            contro_err_abs = control_err * (-1)
+            valor_bytes = [(contro_err_abs >> 8) & 0xFF, contro_err_abs & 0xFF]			
+            bus.write_i2c_block_data(adress, registro, valor_bytes)
+        elif(control_err >= 0):
+            registro = 0x01
+            valor_bytes = [(control_err >> 8) & 0xFF, control_err & 0xFF]			
+            bus.write_i2c_block_data(adress, registro, valor_bytes)
 
-        print(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd ))
-        #funciones.enviar_dato(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd ))
+        #print(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd ))
+        print(control_err)
+
+            #funciones.enviar_dato(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd ))
 
     else: # si no detecta blanco solo graficar imagen
         cv.imshow('detectar', thresh_inv)
@@ -62,5 +83,3 @@ while True:
         break
 capture.release()
 cv.destroyAllWindows()
-
-

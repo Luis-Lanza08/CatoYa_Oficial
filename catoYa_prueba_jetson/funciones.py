@@ -19,10 +19,9 @@ def pid_control(x, medio,p_anterior, i, kp, ki, kd):
     error_final = kp*p[medio] + ki*i + kd*d    #control PID
     return error_final
     
-
-def enviar_dato(dato):
-    arduino = serial.Serial('COM7', 9600)
-    dato_str = str(dato)
-    arduino.write(dato_str.encode('ascii'))
-    print(dato_str)
-     #arduino.close
+def convertir_rango(numero, rango_minimo, rango_maximo, nuevo_minimo, nuevo_maximo):
+    rango_actual = rango_maximo - rango_minimo
+    nuevo_rango = nuevo_maximo - nuevo_minimo
+    valor_normalizado = (numero - rango_minimo) / rango_actual
+    nuevo_valor = nuevo_minimo + (valor_normalizado * nuevo_rango)
+    return int(nuevo_valor)
