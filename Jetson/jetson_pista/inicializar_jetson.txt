@@ -1,0 +1,3 @@
+# comando para inicializar todo cuando la placa prenda.
+gnome-terminal -x bash -c "source /home/ucb/ultralytics/venv/bin/activate && python /home/ucb/catoya/CatoYa_Oficial/catoYa_prueba_jetson/main.py; exec bash"
+
