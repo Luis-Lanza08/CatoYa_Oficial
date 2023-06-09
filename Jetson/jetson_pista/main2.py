@@ -61,7 +61,7 @@ while True:
 
         control_err = funciones.convertir_rango(control_err,-rango,rango,-rango_nuevo, rango_nuevo)   # nomraliza los valores a rangos de -254 a 254 
         funciones.comunicacion_i2c(adress, control_err)
-        funciones.enviar_dato(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd ))
+        #funciones.enviar_dato(funciones.pid_control(x,medio,p_anterior,i, kp, ki, kd ))
         print(control_err)
 
 
